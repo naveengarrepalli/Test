@@ -2,9 +2,6 @@
 import './App.css';
 import React , {useState} from 'react';
 
-
-
-
 function OneVarTable() {
   
   const [emp,setEmp] = useState({id: '1', fname :'', lname: '', number: ''});
