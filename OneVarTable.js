@@ -7,8 +7,10 @@ import React , {useState} from 'react';
 
 function OneVarTable() {
   
-  const [emp,setEmp] = useState({id: '', fname :'', lname: '', number: ''});
+  const [emp,setEmp] = useState({id: '1', fname :'', lname: '', number: ''});
   const [empList,setEmpList] = useState([]);
+  const [editIndex,setEditIndex] = useState(null);
+
 
   const handleChange = (e) =>{
     const {name,value} = e.target;
@@ -23,28 +25,52 @@ function OneVarTable() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(emp)
+    console.log(emp);
     if(emp.id && emp.fname){
+      if(editIndex !== null){
+        const updateContacts = [...empList]
+        updateContacts[editIndex] = emp;
+        setEmpList(updateContacts);
+        setEditIndex(null);
+        const i = empList.length+1;
+        setEmp({id:i,fname:'',lname:'',number:''});
+      }
+      else{
       setEmpList([...empList,emp]);
-      setEmp({id:'',fname:'',lname:'',number:''});
+      const i = empList.length+2;
+      setEmp({id:i,fname:'',lname:'',number:''});
+      }
+
+      
     }
 
-
   };
+
+  const handleEdit = (index) =>{
+    setEmp(empList[index]);
+    setEditIndex(index);
+  };
+
+  const handleDelete = (index) =>{
+    const contactsDelete = [...empList];
+    contactsDelete.splice(index,1);
+    setEmpList(contactsDelete);
+
+  }
 
   return (
     <div className='App'>
       <form onSubmit={handleSubmit}>
-        ID
-      {/* <input type='number' placeholder='Enter ID' value={emp.id} onChange={handleChange} /> <br/><br/> */}
-      <input type="text" name="id" value={emp.id} onChange={handleChange}/><br/><br/>
+        
+        {/* ID 
+      <input type="text" name="id" value={emp.id} onChange={handleChange}/><br/><br/> */}
         FName
         <input type='text' name='fname' value={emp.fname} onChange={handleChange} /> <br/><br/>
         LName
         <input type='text' name='lname'  value={emp.lname} onChange={handleChange} /> <br/><br/>
         Mobile
         <input type='number' name='number' value={emp.number} onChange={handleChange} /> <br/><br/>
-        <button type='submit'>Submit</button>
+        <button type='submit'>{editIndex!== null ? 'Update': 'Submit'}</button>
       </form> <br/> <br/>
 
       <table className='tab'>
@@ -63,6 +89,10 @@ function OneVarTable() {
             <td className='tab'>{emp.fname}</td>
             <td className='tab'>{emp.lname}</td>
             <td className='tab'>{emp.number}</td>
+            <td>
+              <button onClick={()=>{handleEdit(index)}} >Edit</button></td>
+
+            <td><button onClick={()=>{handleDelete(index)}}>Delete</button></td>
             </tr>
           ))}
         </tbody>
